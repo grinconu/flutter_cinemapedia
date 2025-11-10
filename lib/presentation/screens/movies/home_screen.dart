@@ -1,17 +1,29 @@
-import 'package:cinemapedia/presentation/providers/movies/movies_providers.dart';
+import 'package:cinemapedia/config/helpers/human_formats.dart';
+import 'package:cinemapedia/presentation/providers/providers.dart';
+import 'package:cinemapedia/presentation/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class HomeScreen extends ConsumerStatefulWidget {
+class HomeScreen extends StatelessWidget {
   static const routeName = 'home-screen';
 
   const HomeScreen({super.key});
 
   @override
-  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: _HomeVIew(),
+      bottomNavigationBar: CustomBottomNavigation(),
+    );
+  }
 }
 
-class _HomeScreenState extends ConsumerState<HomeScreen> {
+class _HomeVIew extends ConsumerStatefulWidget {
+  @override
+  ConsumerState<_HomeVIew> createState() => _HomeVIewState();
+}
+
+class _HomeVIewState extends ConsumerState<_HomeVIew> {
   @override
   void initState() {
     super.initState();
@@ -20,21 +32,64 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final nowPlayingSlideMovies = ref.watch(moviesSlideShowProvider);
     final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
 
-    if (nowPlayingMovies.isEmpty)
-      return const Center(child: CircularProgressIndicator());
-
-    return Scaffold(
-      body: ListView.builder(
-        itemCount: nowPlayingMovies.length,
-        itemBuilder: (context, index) => ListTile(
-          title: Text(nowPlayingMovies[index].title),
-          subtitle: Image(
-            image: NetworkImage(nowPlayingMovies[index].posterPath),
+    return CustomScrollView(
+      slivers: [
+        SliverAppBar(
+          floating: true,
+          flexibleSpace: FlexibleSpaceBar(
+            title: CustomAppBar(),
           ),
         ),
-      ),
+
+        SliverList(
+          delegate: SliverChildBuilderDelegate((context, index) {
+            return Column(
+              children: [
+
+                MoviesSlidesShow(movies: nowPlayingSlideMovies),
+
+                MovieHorizontalListView(
+                  movies: nowPlayingMovies,
+                  title: 'Now',
+                  subTitle: HumanFormats.getDay(DateTime.now()),
+                  loadNextPage: ref
+                      .read(nowPlayingMoviesProvider.notifier)
+                      .getNowPlayingMovies,
+                ),
+
+                MovieHorizontalListView(
+                  movies: nowPlayingMovies,
+                  title: 'Next',
+                  loadNextPage: ref
+                      .read(nowPlayingMoviesProvider.notifier)
+                      .getNowPlayingMovies,
+                ),
+
+                MovieHorizontalListView(
+                  movies: nowPlayingMovies,
+                  title: 'Popular',
+                  loadNextPage: ref
+                      .read(nowPlayingMoviesProvider.notifier)
+                      .getNowPlayingMovies,
+                ),
+
+                MovieHorizontalListView(
+                  movies: nowPlayingMovies,
+                  title: 'The Best',
+                  loadNextPage: ref
+                      .read(nowPlayingMoviesProvider.notifier)
+                      .getNowPlayingMovies,
+                ),
+
+                const SizedBox(height: 15),
+              ],
+            );
+          }, childCount: 1),
+        ),
+      ],
     );
   }
 }
