@@ -1,4 +1,5 @@
 import 'package:cinemapedia/config/helpers/human_formats.dart';
+import 'package:cinemapedia/presentation/providers/movies/initial_loading_provider.dart';
 import 'package:cinemapedia/presentation/providers/providers.dart';
 import 'package:cinemapedia/presentation/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -35,62 +36,75 @@ class _HomeVIewState extends ConsumerState<_HomeVIew> {
 
   @override
   Widget build(BuildContext context) {
+    final isLoading = ref.watch(initialLoadingProvider);
+
+
     final nowPlayingSlideMovies = ref.watch(moviesSlideShowProvider);
     final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
     final popularMovies = ref.watch(popularMoviesProvider);
     final topRatedMovies = ref.watch(topRatedMoviesProvider);
     final upcomingMovies = ref.watch(upcomingMoviesProvider);
 
-    return CustomScrollView(
-      slivers: [
-        SliverAppBar(
-          floating: true,
-          flexibleSpace: FlexibleSpaceBar(title: CustomAppBar()),
-        ),
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        if(isLoading) const FullScreenLoader(),
 
-        SliverList(
-          delegate: SliverChildBuilderDelegate((context, index) {
-            return Column(
-              children: [
-                MoviesSlidesShow(movies: nowPlayingSlideMovies),
-
-                MovieHorizontalListView(
-                  movies: nowPlayingMovies,
-                  title: 'Now',
-                  subTitle: HumanFormats.getDay(DateTime.now()),
-                  loadNextPage: ref
-                      .read(nowPlayingMoviesProvider.notifier)
-                      .getMoreMovies,
-                ),
-
-                MovieHorizontalListView(
-                  movies: upcomingMovies,
-                  title: 'Upcoming',
-                  loadNextPage: ref
-                      .read(upcomingMoviesProvider.notifier)
-                      .getMoreMovies,
-                ),
-
-                MovieHorizontalListView(
-                  movies: popularMovies,
-                  title: 'Popular',
-                  loadNextPage: ref
-                      .read(popularMoviesProvider.notifier)
-                      .getMoreMovies,
-                ),
-
-                MovieHorizontalListView(
-                  movies: topRatedMovies,
-                  title: 'The Best',
-                  loadNextPage: ref
-                      .read(topRatedMoviesProvider.notifier)
-                      .getMoreMovies,
-                ),
-
-                const SizedBox(height: 15),
-              ],
-            );
-          }, childCount: 1),
+        Visibility(
+          visible: !isLoading,
+          child: CustomScrollView(
+            slivers: [
+              SliverAppBar(
+                floating: true,
+                flexibleSpace: FlexibleSpaceBar(title: CustomAppBar()),
+              ),
+          
+              SliverList(
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  return Column(
+                    children: [
+                      MoviesSlidesShow(movies: nowPlayingSlideMovies),
+          
+                      MovieHorizontalListView(
+                        movies: nowPlayingMovies,
+                        title: 'Now',
+                        subTitle: HumanFormats.getDay(DateTime.now()),
+                        loadNextPage: ref
+                            .read(nowPlayingMoviesProvider.notifier)
+                            .getMoreMovies,
+                      ),
+          
+                      MovieHorizontalListView(
+                        movies: upcomingMovies,
+                        title: 'Upcoming',
+                        loadNextPage: ref
+                            .read(upcomingMoviesProvider.notifier)
+                            .getMoreMovies,
+                      ),
+          
+                      MovieHorizontalListView(
+                        movies: popularMovies,
+                        title: 'Popular',
+                        loadNextPage: ref
+                            .read(popularMoviesProvider.notifier)
+                            .getMoreMovies,
+                      ),
+          
+                      MovieHorizontalListView(
+                        movies: topRatedMovies,
+                        title: 'The Best',
+                        loadNextPage: ref
+                            .read(topRatedMoviesProvider.notifier)
+                            .getMoreMovies,
+                      ),
+          
+                      const SizedBox(height: 15),
+                    ],
+                  );
+                }, childCount: 1),
+              ),
+            ],
+          ),
         ),
       ],
     );
