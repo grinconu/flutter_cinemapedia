@@ -4,8 +4,14 @@ import 'package:flutter_riverpod/legacy.dart';
 
 final nowPlayingMoviesProvider =
     StateNotifierProvider<MoviesNotifier, List<Movie>>((ref) {
-      final movieRepository = ref.watch(movieRepositoryProvider);
-      return MoviesNotifier(fetchMoreMovies: movieRepository.getNowPlaying);
+      final movieRepository = ref.watch(movieRepositoryProvider).getNowPlaying;
+      return MoviesNotifier(fetchMoreMovies: movieRepository);
+    });
+
+final popularMoviesProvider =
+    StateNotifierProvider<MoviesNotifier, List<Movie>>((ref) {
+      final movieRepository = ref.watch(movieRepositoryProvider).getPopular;
+      return MoviesNotifier(fetchMoreMovies: movieRepository);
     });
 
 typedef MovieCallback = Future<List<Movie>> Function({int page});
@@ -17,7 +23,7 @@ class MoviesNotifier extends StateNotifier<List<Movie>> {
   MoviesNotifier({required this.fetchMoreMovies}) : super([]);
 
   Future<void> getNowPlayingMovies() async {
-    if(isLoading) return;
+    if (isLoading) return;
 
     isLoading = true;
     currentPage++;
