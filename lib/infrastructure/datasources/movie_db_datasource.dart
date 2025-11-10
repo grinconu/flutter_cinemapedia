@@ -40,4 +40,24 @@ class MovieDbDatasource extends MoviesDatasource {
 
     return _getResponseMovies(response.data);
   }
+  
+  @override
+  Future<List<Movie>> topRated({int page = 1}) async {
+  final response = await dio.get(
+      '/movie/top_rated',
+      queryParameters: {'page': page},
+    );
+
+    return _getResponseMovies(response.data);
+  }
+  
+  @override
+  Future<List<Movie>> upcoming({int page = 1}) async{
+    final response = await dio.get(
+      '/movie/upcoming',
+      queryParameters: {'page': page},
+    );
+
+    return _getResponseMovies(response.data);
+  }
 }

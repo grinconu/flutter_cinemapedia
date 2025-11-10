@@ -27,8 +27,10 @@ class _HomeVIewState extends ConsumerState<_HomeVIew> {
   @override
   void initState() {
     super.initState();
-    ref.read(nowPlayingMoviesProvider.notifier).getNowPlayingMovies();
-    ref.read(popularMoviesProvider.notifier).getNowPlayingMovies();
+    ref.read(nowPlayingMoviesProvider.notifier).getMoreMovies();
+    ref.read(popularMoviesProvider.notifier).getMoreMovies();
+    ref.read(topRatedMoviesProvider.notifier).getMoreMovies();
+    ref.read(upcomingMoviesProvider.notifier).getMoreMovies();
   }
 
   @override
@@ -36,21 +38,20 @@ class _HomeVIewState extends ConsumerState<_HomeVIew> {
     final nowPlayingSlideMovies = ref.watch(moviesSlideShowProvider);
     final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
     final popularMovies = ref.watch(popularMoviesProvider);
+    final topRatedMovies = ref.watch(topRatedMoviesProvider);
+    final upcomingMovies = ref.watch(upcomingMoviesProvider);
 
     return CustomScrollView(
       slivers: [
         SliverAppBar(
           floating: true,
-          flexibleSpace: FlexibleSpaceBar(
-            title: CustomAppBar(),
-          ),
+          flexibleSpace: FlexibleSpaceBar(title: CustomAppBar()),
         ),
 
         SliverList(
           delegate: SliverChildBuilderDelegate((context, index) {
             return Column(
               children: [
-
                 MoviesSlidesShow(movies: nowPlayingSlideMovies),
 
                 MovieHorizontalListView(
@@ -59,15 +60,15 @@ class _HomeVIewState extends ConsumerState<_HomeVIew> {
                   subTitle: HumanFormats.getDay(DateTime.now()),
                   loadNextPage: ref
                       .read(nowPlayingMoviesProvider.notifier)
-                      .getNowPlayingMovies,
+                      .getMoreMovies,
                 ),
 
                 MovieHorizontalListView(
-                  movies: nowPlayingMovies,
-                  title: 'Next',
+                  movies: upcomingMovies,
+                  title: 'Upcoming',
                   loadNextPage: ref
-                      .read(nowPlayingMoviesProvider.notifier)
-                      .getNowPlayingMovies,
+                      .read(upcomingMoviesProvider.notifier)
+                      .getMoreMovies,
                 ),
 
                 MovieHorizontalListView(
@@ -75,15 +76,15 @@ class _HomeVIewState extends ConsumerState<_HomeVIew> {
                   title: 'Popular',
                   loadNextPage: ref
                       .read(popularMoviesProvider.notifier)
-                      .getNowPlayingMovies,
+                      .getMoreMovies,
                 ),
 
                 MovieHorizontalListView(
-                  movies: nowPlayingMovies,
+                  movies: topRatedMovies,
                   title: 'The Best',
                   loadNextPage: ref
-                      .read(nowPlayingMoviesProvider.notifier)
-                      .getNowPlayingMovies,
+                      .read(topRatedMoviesProvider.notifier)
+                      .getMoreMovies,
                 ),
 
                 const SizedBox(height: 15),
