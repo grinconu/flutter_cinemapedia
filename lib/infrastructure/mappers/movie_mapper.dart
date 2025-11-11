@@ -18,7 +18,7 @@ class MovieMapper {
       popularity: movieDb.popularity,
       posterPath: movieDb.posterPath != ''
           ? '${Environment.baseUrlImage}/w500/${movieDb.posterPath}'
-          : 'no-poster',
+          : Environment.imageNotFound,
       releaseDate: movieDb.releaseDate,
       title: movieDb.title,
       video: movieDb.video,
