@@ -1,5 +1,4 @@
 import 'package:cinemapedia/config/helpers/human_formats.dart';
-import 'package:cinemapedia/presentation/providers/movies/initial_loading_provider.dart';
 import 'package:cinemapedia/presentation/providers/providers.dart';
 import 'package:cinemapedia/presentation/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -38,7 +37,6 @@ class _HomeVIewState extends ConsumerState<_HomeVIew> {
   Widget build(BuildContext context) {
     final isLoading = ref.watch(initialLoadingProvider);
 
-
     final nowPlayingSlideMovies = ref.watch(moviesSlideShowProvider);
     final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
     final popularMovies = ref.watch(popularMoviesProvider);
@@ -48,7 +46,7 @@ class _HomeVIewState extends ConsumerState<_HomeVIew> {
     return Stack(
       alignment: Alignment.center,
       children: [
-        if(isLoading) const FullScreenLoader(),
+        if (isLoading) const FullScreenLoader(),
 
         Visibility(
           visible: !isLoading,
@@ -58,13 +56,13 @@ class _HomeVIewState extends ConsumerState<_HomeVIew> {
                 floating: true,
                 flexibleSpace: FlexibleSpaceBar(title: CustomAppBar()),
               ),
-          
+
               SliverList(
                 delegate: SliverChildBuilderDelegate((context, index) {
                   return Column(
                     children: [
                       MoviesSlidesShow(movies: nowPlayingSlideMovies),
-          
+
                       MovieHorizontalListView(
                         movies: nowPlayingMovies,
                         title: 'Now',
@@ -73,7 +71,7 @@ class _HomeVIewState extends ConsumerState<_HomeVIew> {
                             .read(nowPlayingMoviesProvider.notifier)
                             .getMoreMovies,
                       ),
-          
+
                       MovieHorizontalListView(
                         movies: upcomingMovies,
                         title: 'Upcoming',
@@ -81,7 +79,7 @@ class _HomeVIewState extends ConsumerState<_HomeVIew> {
                             .read(upcomingMoviesProvider.notifier)
                             .getMoreMovies,
                       ),
-          
+
                       MovieHorizontalListView(
                         movies: popularMovies,
                         title: 'Popular',
@@ -89,7 +87,7 @@ class _HomeVIewState extends ConsumerState<_HomeVIew> {
                             .read(popularMoviesProvider.notifier)
                             .getMoreMovies,
                       ),
-          
+
                       MovieHorizontalListView(
                         movies: topRatedMovies,
                         title: 'The Best',
@@ -97,7 +95,7 @@ class _HomeVIewState extends ConsumerState<_HomeVIew> {
                             .read(topRatedMoviesProvider.notifier)
                             .getMoreMovies,
                       ),
-          
+
                       const SizedBox(height: 15),
                     ],
                   );
