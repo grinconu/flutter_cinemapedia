@@ -1,4 +1,5 @@
 import 'package:cinemapedia/config/constants/environment.dart';
+import 'package:cinemapedia/config/database/database.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:cinemapedia/infrastructure/models/movie_db/movie_db_detail.dart';
 import 'package:cinemapedia/infrastructure/models/movie_db/movie_movie_db.dart';
@@ -47,6 +48,27 @@ class MovieMapper {
       video: movieDbDetail.video,
       voteAverage: movieDbDetail.voteAverage,
       voteCount: movieDbDetail.voteCount,
+    );
+  }
+}
+
+extension FavoritesMovyExtension on FavoritesMovy {
+  Movie toMovie() {
+    return Movie(
+      adult: false,
+      backdropPath: backdropPath,
+      genreIds: [],
+      id: movieId.toString(),
+      originalLanguage: '',
+      originalTitle: originalTitle,
+      overview: '',
+      popularity: 0.0,
+      posterPath: posterPath,
+      releaseDate: null,
+      title: title,
+      video: false,
+      voteAverage: voteAverage,
+      voteCount: 0,
     );
   }
 }
