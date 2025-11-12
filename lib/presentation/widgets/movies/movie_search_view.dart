@@ -3,9 +3,11 @@ import 'package:cinemapedia/config/helpers/human_formats.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:flutter/material.dart';
 
+typedef MovieSelectedCallback = void Function(BuildContext context, Movie movie);
+
 class MovieSearchView extends StatelessWidget {
   final Movie movie;
-  final Function onMovieSelected;
+  final MovieSelectedCallback onMovieSelected;
   const MovieSearchView({super.key, required this.movie, required this.onMovieSelected});
 
   @override
