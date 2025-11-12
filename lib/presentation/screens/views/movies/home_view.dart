@@ -19,15 +19,21 @@ class _HomeViewState extends ConsumerState<HomeView> {
   @override
   void initState() {
     super.initState();
-    ref.read(nowPlayingMoviesProvider.notifier).getMoreMovies();
-    ref.read(popularMoviesProvider.notifier).getMoreMovies();
-    ref.read(topRatedMoviesProvider.notifier).getMoreMovies();
-    ref.read(upcomingMoviesProvider.notifier).getMoreMovies();
+    Future.wait([
+      ref.read(nowPlayingMoviesProvider.notifier).getMoreMovies(),
+      ref.read(popularMoviesProvider.notifier).getMoreMovies(),
+      ref.read(topRatedMoviesProvider.notifier).getMoreMovies(),
+      ref.read(upcomingMoviesProvider.notifier).getMoreMovies(),
+    ]);
   }
 
   @override
   Widget build(BuildContext context) {
     final isLoading = ref.watch(initialLoadingProvider);
+
+    if (isLoading) {
+      return const FullScreenLoader();
+    }
 
     final nowPlayingSlideMovies = ref.watch(moviesSlideShowProvider);
     final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
@@ -35,66 +41,52 @@ class _HomeViewState extends ConsumerState<HomeView> {
     final topRatedMovies = ref.watch(topRatedMoviesProvider);
     final upcomingMovies = ref.watch(upcomingMoviesProvider);
 
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        if (isLoading) const FullScreenLoader(),
-
-        Visibility(
-          visible: !isLoading,
-          child: CustomScrollView(
-            slivers: [
-              SliverAppBar(
-                floating: true,
-                flexibleSpace: FlexibleSpaceBar(title: CustomAppBar()),
+    return CustomScrollView(
+      slivers: [
+        SliverAppBar(
+          floating: true,
+          flexibleSpace: FlexibleSpaceBar(title: CustomAppBar()),
+        ),
+        SliverList(
+          delegate: SliverChildListDelegate([
+            RepaintBoundary(
+              child: MoviesSlidesShow(movies: nowPlayingSlideMovies),
+            ),
+            RepaintBoundary(
+              child: MovieHorizontalListView(
+                movies: nowPlayingMovies,
+                title: 'Now',
+                subTitle: HumanFormats.getDay(DateTime.now()),
+                loadNextPage:
+                    ref.read(nowPlayingMoviesProvider.notifier).getMoreMovies,
               ),
-
-              SliverList(
-                delegate: SliverChildBuilderDelegate((context, index) {
-                  return Column(
-                    children: [
-                      MoviesSlidesShow(movies: nowPlayingSlideMovies),
-
-                      MovieHorizontalListView(
-                        movies: nowPlayingMovies,
-                        title: 'Now',
-                        subTitle: HumanFormats.getDay(DateTime.now()),
-                        loadNextPage: ref
-                            .read(nowPlayingMoviesProvider.notifier)
-                            .getMoreMovies,
-                      ),
-
-                      MovieHorizontalListView(
-                        movies: upcomingMovies,
-                        title: 'Upcoming',
-                        loadNextPage: ref
-                            .read(upcomingMoviesProvider.notifier)
-                            .getMoreMovies,
-                      ),
-
-                      MovieHorizontalListView(
-                        movies: popularMovies,
-                        title: 'Popular',
-                        loadNextPage: ref
-                            .read(popularMoviesProvider.notifier)
-                            .getMoreMovies,
-                      ),
-
-                      MovieHorizontalListView(
-                        movies: topRatedMovies,
-                        title: 'The Best',
-                        loadNextPage: ref
-                            .read(topRatedMoviesProvider.notifier)
-                            .getMoreMovies,
-                      ),
-
-                      const SizedBox(height: 15),
-                    ],
-                  );
-                }, childCount: 1),
+            ),
+            RepaintBoundary(
+              child: MovieHorizontalListView(
+                movies: upcomingMovies,
+                title: 'Upcoming',
+                loadNextPage:
+                    ref.read(upcomingMoviesProvider.notifier).getMoreMovies,
               ),
-            ],
-          ),
+            ),
+            RepaintBoundary(
+              child: MovieHorizontalListView(
+                movies: popularMovies,
+                title: 'Popular',
+                loadNextPage:
+                    ref.read(popularMoviesProvider.notifier).getMoreMovies,
+              ),
+            ),
+            RepaintBoundary(
+              child: MovieHorizontalListView(
+                movies: topRatedMovies,
+                title: 'The Best',
+                loadNextPage:
+                    ref.read(topRatedMoviesProvider.notifier).getMoreMovies,
+              ),
+            ),
+            const SizedBox(height: 15),
+          ]),
         ),
       ],
     );
