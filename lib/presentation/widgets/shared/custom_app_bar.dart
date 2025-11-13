@@ -1,4 +1,5 @@
 import 'package:cinemapedia/presentation/delegates/search_movie_delegate.dart';
+import 'package:cinemapedia/presentation/providers/theme/theme_provider.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,7 +9,7 @@ import 'package:go_router/go_router.dart';
 class CustomAppBar extends ConsumerWidget {
   const CustomAppBar({super.key});
 
-  void _showLanguageMenu(BuildContext context) {
+  void _showSettingsMenu(BuildContext context, WidgetRef ref) {
     final RenderBox button = context.findRenderObject() as RenderBox;
     final RenderBox overlay =
         Overlay.of(context).context.findRenderObject() as RenderBox;
@@ -22,11 +23,21 @@ class CustomAppBar extends ConsumerWidget {
     );
 
     final currentLocale = context.locale;
+    final currentTheme = ref.read(themeModeProvider);
 
-    showMenu<Locale>(
+    showMenu<dynamic>(
       context: context,
       position: position,
       items: [
+        // Language Section Header
+        PopupMenuItem<String>(
+          enabled: false,
+          child: Text(
+            'language.title'.tr(),
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+          ),
+        ),
+        // English
         PopupMenuItem<Locale>(
           value: const Locale('en'),
           child: Row(
@@ -42,6 +53,7 @@ class CustomAppBar extends ConsumerWidget {
             ],
           ),
         ),
+        // Spanish
         PopupMenuItem<Locale>(
           value: const Locale('es'),
           child: Row(
@@ -57,10 +69,72 @@ class CustomAppBar extends ConsumerWidget {
             ],
           ),
         ),
+        // Divider
+        const PopupMenuDivider(),
+        // Theme Section Header
+        PopupMenuItem<String>(
+          enabled: false,
+          child: Text(
+            'theme.title'.tr(),
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+          ),
+        ),
+        // Light Theme
+        PopupMenuItem<ThemeMode>(
+          value: ThemeMode.light,
+          child: Row(
+            children: [
+              const Icon(Icons.light_mode, size: 20),
+              const SizedBox(width: 10),
+              Text('theme.light'.tr()),
+              if (currentTheme == ThemeMode.light)
+                const Padding(
+                  padding: EdgeInsets.only(left: 10),
+                  child: Icon(Icons.check, size: 18),
+                ),
+            ],
+          ),
+        ),
+        // Dark Theme
+        PopupMenuItem<ThemeMode>(
+          value: ThemeMode.dark,
+          child: Row(
+            children: [
+              const Icon(Icons.dark_mode, size: 20),
+              const SizedBox(width: 10),
+              Text('theme.dark'.tr()),
+              if (currentTheme == ThemeMode.dark)
+                const Padding(
+                  padding: EdgeInsets.only(left: 10),
+                  child: Icon(Icons.check, size: 18),
+                ),
+            ],
+          ),
+        ),
+        // System Theme
+        PopupMenuItem<ThemeMode>(
+          value: ThemeMode.system,
+          child: Row(
+            children: [
+              const Icon(Icons.brightness_auto, size: 20),
+              const SizedBox(width: 10),
+              Text('theme.system'.tr()),
+              if (currentTheme == ThemeMode.system)
+                const Padding(
+                  padding: EdgeInsets.only(left: 10),
+                  child: Icon(Icons.check, size: 18),
+                ),
+            ],
+          ),
+        ),
       ],
-    ).then((selectedLocale) {
-      if (selectedLocale != null && context.mounted) {
-        context.setLocale(selectedLocale);
+    ).then((selected) {
+      if (selected == null || !context.mounted) return;
+
+      if (selected is Locale) {
+        context.setLocale(selected);
+      } else if (selected is ThemeMode) {
+        ref.read(themeModeProvider.notifier).setThemeMode(selected);
       }
     });
   }
@@ -81,7 +155,7 @@ class CustomAppBar extends ConsumerWidget {
               Icon(Icons.movie_outlined, color: colors.primary),
               const SizedBox(width: 5),
               GestureDetector(
-                onTap: () => _showLanguageMenu(context),
+                onTap: () => _showSettingsMenu(context, ref),
                 child: Row(
                   children: [
                     Text('app.name'.tr(), style: titleStyle),
