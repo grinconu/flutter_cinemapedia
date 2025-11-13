@@ -1,5 +1,6 @@
 import 'package:cinemapedia/presentation/providers/providers.dart';
 import 'package:cinemapedia/presentation/widgets/movies/movies_masonry.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -30,7 +31,7 @@ class _FavoritesViewState extends ConsumerState<FavoritesView> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(Icons.favorite_border, color: colors.primary, size: 100),
-              Text('No tienes peliculas favoritas'),
+              Text('favorites.no_favorites'.tr()),
             ],
           ),
         ),

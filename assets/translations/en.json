@@ -1,0 +1,23 @@
+{
+  "app": {
+    "name": "Cinemapedia"
+  },
+  "home": {
+    "now": "Now",
+    "upcoming": "Upcoming",
+    "popular": "Popular",
+    "the_best": "The Best"
+  },
+  "favorites": {
+    "no_favorites": "You don't have any favorite movies"
+  },
+  "search": {
+    "search_movie": "Search Movie",
+    "no_results": "No results found"
+  },
+  "language": {
+    "title": "Language",
+    "english": "English",
+    "spanish": "Spanish"
+  }
+}

@@ -4,6 +4,7 @@ import 'package:cinemapedia/presentation/widgets/movies/movie_horizontal_list_vi
 import 'package:cinemapedia/presentation/widgets/movies/movies_slides_show.dart';
 import 'package:cinemapedia/presentation/widgets/shared/custom_app_bar.dart';
 import 'package:cinemapedia/presentation/widgets/shared/full_screen_loader.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -45,7 +46,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
       slivers: [
         SliverAppBar(
           floating: true,
-          flexibleSpace: FlexibleSpaceBar(title: CustomAppBar()),
+          flexibleSpace: CustomAppBar(),
         ),
         SliverList(
           delegate: SliverChildListDelegate([
@@ -55,7 +56,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
             RepaintBoundary(
               child: MovieHorizontalListView(
                 movies: nowPlayingMovies,
-                title: 'Now',
+                title: 'home.now'.tr(),
                 subTitle: HumanFormats.getDay(DateTime.now()),
                 loadNextPage:
                     ref.read(nowPlayingMoviesProvider.notifier).getMoreMovies,
@@ -64,7 +65,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
             RepaintBoundary(
               child: MovieHorizontalListView(
                 movies: upcomingMovies,
-                title: 'Upcoming',
+                title: 'home.upcoming'.tr(),
                 loadNextPage:
                     ref.read(upcomingMoviesProvider.notifier).getMoreMovies,
               ),
@@ -72,7 +73,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
             RepaintBoundary(
               child: MovieHorizontalListView(
                 movies: popularMovies,
-                title: 'Popular',
+                title: 'home.popular'.tr(),
                 loadNextPage:
                     ref.read(popularMoviesProvider.notifier).getMoreMovies,
               ),
@@ -80,7 +81,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
             RepaintBoundary(
               child: MovieHorizontalListView(
                 movies: topRatedMovies,
-                title: 'The Best',
+                title: 'home.the_best'.tr(),
                 loadNextPage:
                     ref.read(topRatedMoviesProvider.notifier).getMoreMovies,
               ),

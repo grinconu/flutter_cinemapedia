@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:animate_do/animate_do.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:cinemapedia/presentation/widgets/movies/movie_search_view.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 typedef SearchMoviesCallback = Future<List<Movie>> Function(String query);
@@ -40,7 +41,7 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
   }
 
   @override
-  String get searchFieldLabel => 'Search Movie';
+  String get searchFieldLabel => 'search.search_movie'.tr();
 
   @override
   List<Widget>? buildActions(BuildContext context) {
@@ -100,7 +101,7 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
         final movies = snapshot.data ?? [];
 
         if (movies.isEmpty) {
-          return const Center(child: Text('No results found'));
+          return Center(child: Text('search.no_results'.tr()));
         }
 
         return ListView.builder(
